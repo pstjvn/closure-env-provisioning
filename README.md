@@ -11,8 +11,8 @@ Once the makefile is run you should have all you need to start a new project or
 clone an existing one built with this setup and compile it / build it for
 production locally.
 
-All projects are to be found in the ```apps``` directory. You cna put there as
-many projecta as you need as those are built indepedently (i.e. you need only
+All projects are to be found in the ```apps``` directory. You can put there as
+many projects as you need as those are built indepedently (i.e. you need only
 one copy of the build environment).
 
 TODO:

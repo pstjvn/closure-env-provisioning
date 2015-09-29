@@ -59,10 +59,10 @@ env:
 	@which java python node git mvn ant npm &> /dev/null
 	if [ ! -d "apps" ]; then mkdir "apps"; fi
 	cd apps/ && \
-	if [ ! -d "pstj"]; then git clone git@github.com:pstjvn/pstj-closure.git pstj; \
+	if [ ! -d "pstj" ]; then git clone git@github.com:pstjvn/pstj-closure.git pstj; \
 	else cd pstj && git pull; fi
 	cd apps/ && \
-	if [ ! -d "smjs"]; then git clone git@github.com:pstjvn/smjslib.git smjs; \
+	if [ ! -d "smjs" ]; then git clone git@github.com:pstjvn/smjslib.git smjs; \
 	else cd pstj && git pull; fi
 
 
