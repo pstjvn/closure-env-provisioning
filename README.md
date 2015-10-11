@@ -16,5 +16,7 @@ many projects as you need as those are built indepedently (i.e. you need only
 one copy of the build environment).
 
 TODO:
+
 * add gjslint
-* automatically build node dependencies for automatic code generation in dependent libs.
+* automatically build node dependencies for automatic code generation in
+dependent libs.

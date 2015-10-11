@@ -15,42 +15,43 @@ lib:
 	else cd $(LIB_DIR) && git pull; fi
 
 gcc:
-	if [ ! -d "$(COMPILER_DIR)" ]; then mkdir $(COMPILER_DIR); fi && \
+	if [ ! -d "$(COMPILER_DIR)" ]; then \
+		mkdir $(COMPILER_DIR); fi && \
 	cd $(COMPILER_DIR) && \
-	if [ -d "$(SRC_DIR)" ]; then rm -rf $(SRC_DIR); fi && \
-	git clone git@github.com:google/closure-compiler.git $(SRC_DIR) && \
+	if [ ! -d "$(SRC_DIR)" ]; then \
+		git clone git@github.com:google/closure-compiler.git $(SRC_DIR); fi && \
 	cd $(SRC_DIR) && \
+	git pull && \
 	ant clean && \
 	ant jar && \
-	cp build/compiler.jar ../ && \
-	cd ../ && \
-	rm -rf $(SRC_DIR)
+	cp build/compiler.jar ../
 
 gss:
-	if [ ! -d "$(STYELSHEETS_DIR)" ]; then mkdir $(STYELSHEETS_DIR); fi && \
+	if [ ! -d "$(STYELSHEETS_DIR)" ]; then \
+		mkdir $(STYELSHEETS_DIR); fi && \
 	cd $(STYELSHEETS_DIR) && \
-	if [ -d "$(SRC_DIR)" ]; then rm -rf $(SRC_DIR); fi && \
-	git clone git@github.com:google/closure-stylesheets.git $(SRC_DIR) && \
+	if [ ! -d "$(SRC_DIR)" ]; then \
+		git clone git@github.com:google/closure-stylesheets.git $(SRC_DIR); fi && \
 	cd $(SRC_DIR) && \
+	git pull && \
 	ant clean && \
 	ant jar && \
-	cp build/closure-stylesheets.jar ../ && \
-	cd ../ && \
-	rm -rf $(SRC_DIR)
+	cp build/closure-stylesheets.jar ../
 
 soy: library
-	if [ ! -d "$(TEMPLATES_DIR)" ]; then mkdir $(TEMPLATES_DIR); fi && \
+	if [ ! -d "$(TEMPLATES_DIR)" ]; then \
+		mkdir $(TEMPLATES_DIR); fi && \
 	cd $(TEMPLATES_DIR) && \
-	if [ -d "$(SRC_DIR)" ]; then rm -rf $(SRC_DIR); fi && \
-	git clone git@github.com:google/closure-templates.git $(SRC_DIR) && \
+	if [ ! -d "$(SRC_DIR)" ]; then \
+		git clone git@github.com:google/closure-templates.git $(SRC_DIR); fi && \
 	cd $(SRC_DIR) && \
+	git pull && \
 	mvn clean && \
 	mvn package -Dmaven.test.skip=true && \
 	cp target/*SoyToJsSrcCompiler.jar ../SoyToJsSrcCompiler.jar && \
 	cp target/*SoyMsgExtractor.jar ../SoyMsgExtractor.jar && \
 	cp target/soyutils_usegoog.js ../ && \
 	cd ../ && \
-	rm -rf $(SRC_DIR) && \
 	python ../library/closure/bin/build/depswriter.py \
 	--path_with_depspath="soyutils_usegoog.js ../../../templates/soyutils_usegoog.js" \
 	--output_file=deps.js
