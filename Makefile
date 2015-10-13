@@ -1,12 +1,17 @@
 
-# Variables
+### Directories
 SRC_DIR = src/
 LIB_DIR = library/
 COMPILER_DIR = compiler/
 TEMPLATES_DIR = templates/
 STYELSHEETS_DIR = stylesheets/
+POLYMER_RENAMER_DIR = polymerrenamer/
 
-all: env lib soy gss gcc
+### Repos
+POLYMER_RENAMER_REPO="git@github.com:PolymerLabs/PolymerRenamer.git"
+
+
+all: env lib soy gss gcc pr
 
 # Targets
 lib:
@@ -55,6 +60,16 @@ soy: library
 	python ../library/closure/bin/build/depswriter.py \
 	--path_with_depspath="soyutils_usegoog.js ../../../templates/soyutils_usegoog.js" \
 	--output_file=deps.js
+
+# PolymerRenamer
+pr:
+	if [ ! -d "$(POLYMER_RENAMER_DIR)" ]; then \
+		mkdir $(POLYMER_RENAMER_DIR); fi && \
+	cd $(POLYMER_RENAMER_DIR) && \
+	if [ ! -d "$(SRC_DIR)" ]; then \
+		git clone $(POLYMER_RENAMER_REPO) $(SRC_DIR); fi && \
+	cd $(SRC_DIR) && git pull && ant clean && ant jar && \
+	cp PolymerRenamer.jar ../
 
 env:
 	@which java python node git mvn ant npm &> /dev/null
