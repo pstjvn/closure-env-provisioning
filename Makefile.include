@@ -1,1 +1,2 @@
-linter = python ../../linter/closure_linter/gjslint.py
+userbase = $(shell python -c "import site;import sys;sys.stdout.write(site.USER_BASE)")
+linter = $(userbase)/bin/gjslint

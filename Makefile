@@ -66,7 +66,8 @@ gjslint:
 	if [ ! -d "$(GJSLINT_DIR)" ]; then \
 		git clone git@github.com:google/closure-linter.git $(GJSLINT_DIR); fi && \
 	cd $(GJSLINT_DIR) && \
-	git pull
+	git pull && \
+	python ./setup.py install --user
 
 # PolymerRenamer
 pr:
