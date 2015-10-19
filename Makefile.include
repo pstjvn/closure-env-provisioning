@@ -1,0 +1,1 @@
+linter = python ../../linter/closure_linter/gjslint.py

@@ -6,12 +6,13 @@ COMPILER_DIR = compiler/
 TEMPLATES_DIR = templates/
 STYELSHEETS_DIR = stylesheets/
 POLYMER_RENAMER_DIR = polymerrenamer/
+GJSLINT_DIR = linter/
 
 ### Repos
 POLYMER_RENAMER_REPO="git@github.com:PolymerLabs/PolymerRenamer.git"
 
 
-all: env lib soy gss gcc pr
+all: env lib soy gss gcc pr gjslint
 
 # Targets
 lib:
@@ -60,6 +61,12 @@ soy: library
 	python ../library/closure/bin/build/depswriter.py \
 	--path_with_depspath="soyutils_usegoog.js ../../../templates/soyutils_usegoog.js" \
 	--output_file=deps.js
+
+gjslint:
+	if [ ! -d "$(GJSLINT_DIR)" ]; then \
+		git clone git@github.com:google/closure-linter.git $(GJSLINT_DIR); fi && \
+	cd $(GJSLINT_DIR) && \
+	git pull
 
 # PolymerRenamer
 pr:
