@@ -12,14 +12,15 @@ GJSLINT_DIR = linter/
 POLYMER_RENAMER_REPO="git@github.com:PolymerLabs/PolymerRenamer.git"
 
 
-all: env lib soy gss gcc pr gjslint
+all: env lib soy gss gcc pr gjslint deps
 
-# Targets
+# The closure js library.
 lib:
 	if [ ! -d "$(LIB_DIR)" ]; then \
 	git clone git@github.com:google/closure-library.git $(LIB_DIR); \
 	else cd $(LIB_DIR) && git pull; fi
 
+# The jscompiler (aka closure compiler).
 gcc:
 	if [ ! -d "$(COMPILER_DIR)" ]; then \
 		mkdir $(COMPILER_DIR); fi && \
@@ -32,6 +33,7 @@ gcc:
 	ant jar && \
 	cp build/compiler.jar ../
 
+# The closure stylesheet related jars.
 gss:
 	if [ ! -d "$(STYELSHEETS_DIR)" ]; then \
 		mkdir $(STYELSHEETS_DIR); fi && \
@@ -44,6 +46,7 @@ gss:
 	ant jar && \
 	cp build/closure-stylesheets.jar ../
 
+# The closure templates related jars.
 soy: library
 	if [ ! -d "$(TEMPLATES_DIR)" ]; then \
 		mkdir $(TEMPLATES_DIR); fi && \
@@ -62,6 +65,7 @@ soy: library
 	--path_with_depspath="soyutils_usegoog.js ../../../templates/soyutils_usegoog.js" \
 	--output_file=deps.js
 
+# The Google JS linter
 gjslint:
 	if [ ! -d "$(GJSLINT_DIR)" ]; then \
 		git clone git@github.com:google/closure-linter.git $(GJSLINT_DIR); fi && \
@@ -79,14 +83,36 @@ pr:
 	cd $(SRC_DIR) && git pull && ant clean && ant jar && \
 	cp PolymerRenamer.jar ../
 
+# Siple recipe to check for the needed prerequisits before attempting
+# a real build of the environment.
 env:
 	@which java python node git mvn ant npm &> /dev/null
-	if [ ! -d "apps" ]; then mkdir "apps"; fi
+
+
+# Groups the third party deps into a single recipe.
+deps: pstjlib externs smjslib
+
+# Creates the apps directory, used to all non-google dependecnies.
+apps/:
+	mkdir apps/
+
+# Pulls in the pstj library as dependency. We assume that most projects will need that.
+pstjlib: apps/
 	cd apps/ && \
 	if [ ! -d "pstj" ]; then git clone git@github.com:pstjvn/pstj-closure.git pstj; \
 	else cd pstj && git pull; fi
+
+# Pulls in the latest externs
+externs: apps/
+	cd apps/ && \
+	if [ ! -d "externs" ]; then git clone git@github.com:pstjvn/gcc-externs.git externs; \
+	else cd externs && git pull; fi
+
+# Pulls in the smjs library. Most projects will not use that, but it is included in the
+# default Makefile of the seed project, so we pull it for now. Once that dependency is
+# removed it can be removed from here as well.
+smjslib: apps/
 	cd apps/ && \
 	if [ ! -d "smjs" ]; then git clone git@github.com:pstjvn/smjslib.git smjs; \
 	else cd pstj && git pull; fi
-
 
