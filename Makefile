@@ -26,12 +26,16 @@ gcc:
 		mkdir $(COMPILER_DIR); fi && \
 	cd $(COMPILER_DIR) && \
 	if [ ! -d "$(SRC_DIR)" ]; then \
-		git clone git@github.com:google/closure-compiler.git $(SRC_DIR); fi && \
+		git clone git@github.com:google/closure-compiler.git $(SRC_DIR); \
+	fi && \
 	cd $(SRC_DIR) && \
-	git pull && \
-	ant clean && \
-	ant jar && \
-	cp build/compiler.jar ../
+	git remote update && \
+	if [ $(shell git rev-parse @) != $(shell git rev-parse @{u}) ]; then \
+		git pull && \
+		ant clean && \
+		ant jar && \
+		cp build/compiler.jar ../ ; \
+	fi
 
 # The closure stylesheet related jars.
 gss:
@@ -39,12 +43,16 @@ gss:
 		mkdir $(STYELSHEETS_DIR); fi && \
 	cd $(STYELSHEETS_DIR) && \
 	if [ ! -d "$(SRC_DIR)" ]; then \
-		git clone git@github.com:google/closure-stylesheets.git $(SRC_DIR); fi && \
+		git clone git@github.com:google/closure-stylesheets.git $(SRC_DIR); \
+	fi && \
 	cd $(SRC_DIR) && \
-	git pull && \
-	ant clean && \
-	ant jar && \
-	cp build/closure-stylesheets.jar ../
+	git remote update && \
+	if [ $(shell git rev-parse @) != $(shell git rev-parse @{u}) ]; then \
+		git pull && \
+		ant clean && \
+		ant jar && \
+		cp build/closure-stylesheets.jar ../ ; \
+	fi
 
 # The closure templates related jars.
 soy: library
@@ -52,36 +60,51 @@ soy: library
 		mkdir $(TEMPLATES_DIR); fi && \
 	cd $(TEMPLATES_DIR) && \
 	if [ ! -d "$(SRC_DIR)" ]; then \
-		git clone git@github.com:google/closure-templates.git $(SRC_DIR); fi && \
+		git clone git@github.com:google/closure-templates.git $(SRC_DIR); \
+	fi && \
 	cd $(SRC_DIR) && \
-	git pull && \
-	mvn clean && \
-	mvn package -Dmaven.test.skip=true && \
-	cp target/*SoyToJsSrcCompiler.jar ../SoyToJsSrcCompiler.jar && \
-	cp target/*SoyMsgExtractor.jar ../SoyMsgExtractor.jar && \
-	cp target/soyutils_usegoog.js ../ && \
-	cd ../ && \
-	python ../library/closure/bin/build/depswriter.py \
-	--path_with_depspath="soyutils_usegoog.js ../../../templates/soyutils_usegoog.js" \
-	--output_file=deps.js
+	git remote update && \
+	if [ $(shell git rev-parse @) != $(shell git rev-parse @{u}) ]; then \
+		git pull && \
+		mvn clean && \
+		mvn package -Dmaven.test.skip=true && \
+		cp target/*SoyToJsSrcCompiler.jar ../SoyToJsSrcCompiler.jar && \
+		cp target/*SoyMsgExtractor.jar ../SoyMsgExtractor.jar && \
+		cp target/soyutils_usegoog.js ../ && \
+		cd ../ && \
+		python ../library/closure/bin/build/depswriter.py \
+		--path_with_depspath="soyutils_usegoog.js ../../../templates/soyutils_usegoog.js" \
+		--output_file=deps.js ; \
+	fi
 
 # The Google JS linter
 gjslint:
 	if [ ! -d "$(GJSLINT_DIR)" ]; then \
-		git clone git@github.com:google/closure-linter.git $(GJSLINT_DIR); fi && \
+		git clone git@github.com:google/closure-linter.git $(GJSLINT_DIR); \
+	fi && \
 	cd $(GJSLINT_DIR) && \
-	git pull && \
-	python ./setup.py install --user
+	git remote update && \
+	if [ $(shell git rev-parse @) != $(shell git rev-parse @{u}) ]; then \
+		git pull && \
+		python ./setup.py install --user ; \
+	fi
+
 
 # PolymerRenamer
 pr:
 	if [ ! -d "$(POLYMER_RENAMER_DIR)" ]; then \
-		mkdir $(POLYMER_RENAMER_DIR); fi && \
+		mkdir $(POLYMER_RENAMER_DIR); \
+	fi && \
 	cd $(POLYMER_RENAMER_DIR) && \
 	if [ ! -d "$(SRC_DIR)" ]; then \
-		git clone $(POLYMER_RENAMER_REPO) $(SRC_DIR); fi && \
-	cd $(SRC_DIR) && git pull && ant clean && ant jar && \
-	cp PolymerRenamer.jar ../
+		git clone $(POLYMER_RENAMER_REPO) $(SRC_DIR); \
+	fi && \
+	cd $(SRC_DIR) && \
+	git remote update && \
+	if [ $(shell git rev-parse @) != $(shell git rev-parse @{u}) ]; then \
+		git pull && ant clean && ant jar && \
+		cp PolymerRenamer.jar ../ ; \
+	fi
 
 # Siple recipe to check for the needed prerequisits before attempting
 # a real build of the environment.
