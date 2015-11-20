@@ -30,7 +30,7 @@ gcc:
 	fi && \
 	cd $(SRC_DIR) && \
 	git remote update && \
-	if [ $(shell git rev-parse @) != $(shell git rev-parse @{u}) ]; then \
+	if [ `git rev-parse @` != `git rev-parse @{u}` ]; then \
 		git pull && \
 		ant clean && \
 		ant jar && \
@@ -47,7 +47,7 @@ gss:
 	fi && \
 	cd $(SRC_DIR) && \
 	git remote update && \
-	if [ $(shell git rev-parse @) != $(shell git rev-parse @{u}) ]; then \
+	if [ `git rev-parse @` != `git rev-parse @{u}` ]; then \
 		git pull && \
 		ant clean && \
 		ant jar && \
@@ -64,7 +64,7 @@ soy: library
 	fi && \
 	cd $(SRC_DIR) && \
 	git remote update && \
-	if [ $(shell git rev-parse @) != $(shell git rev-parse @{u}) ]; then \
+	if [ `git rev-parse @` != `git rev-parse @{u}` ]; then \
 		git pull && \
 		mvn clean && \
 		mvn package -Dmaven.test.skip=true && \
@@ -84,7 +84,7 @@ gjslint:
 	fi && \
 	cd $(GJSLINT_DIR) && \
 	git remote update && \
-	if [ $(shell git rev-parse @) != $(shell git rev-parse @{u}) ]; then \
+	if [ `git rev-parse @` != `git rev-parse @{u}` ]; then \
 		git pull && \
 		python ./setup.py install --user ; \
 	fi
@@ -101,7 +101,7 @@ pr:
 	fi && \
 	cd $(SRC_DIR) && \
 	git remote update && \
-	if [ $(shell git rev-parse @) != $(shell git rev-parse @{u}) ]; then \
+	if [ `git rev-parse @` != `git rev-parse @{u}` ]; then \
 		git pull && ant clean && ant jar && \
 		cp PolymerRenamer.jar ../ ; \
 	fi
