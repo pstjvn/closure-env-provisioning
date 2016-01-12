@@ -8,11 +8,13 @@ STYELSHEETS_DIR = stylesheets/
 POLYMER_RENAMER_DIR = polymerrenamer/
 GJSLINT_DIR = linter/
 
+include Makefile.include
+
 ### Repos
 POLYMER_RENAMER_REPO="git@github.com:PolymerLabs/PolymerRenamer.git"
 
 
-all: env lib soy gss gcc pr gjslint deps
+all: env lib soy gss gcc pr gjslint deps lessc
 
 # The closure js library.
 lib:
@@ -30,7 +32,8 @@ gcc:
 	fi && \
 	cd $(SRC_DIR) && \
 	git remote update && \
-	if [ `git rev-parse @` != `git rev-parse @{u}` ]; then \
+	if [ `git rev-parse @` != `git rev-parse @{u}` ] || \
+			[ ! -e ../compiler.jar ]; then \
 		git pull && \
 		ant clean && \
 		ant jar && \
@@ -47,7 +50,8 @@ gss:
 	fi && \
 	cd $(SRC_DIR) && \
 	git remote update && \
-	if [ `git rev-parse @` != `git rev-parse @{u}` ]; then \
+	if [ `git rev-parse @` != `git rev-parse @{u}` ] || \
+			[ ! -e ../closure-stylesheets.jar ] ; then \
 		git pull && \
 		ant clean && \
 		ant jar && \
@@ -64,7 +68,8 @@ soy: library
 	fi && \
 	cd $(SRC_DIR) && \
 	git remote update && \
-	if [ `git rev-parse @` != `git rev-parse @{u}` ]; then \
+	if [ `git rev-parse @` != `git rev-parse @{u}` ] || \
+			[ ! -e ../SoyToJsSrcCompiler.jar ]; then \
 		git pull && \
 		mvn clean && \
 		mvn package -Dmaven.test.skip=true && \
@@ -84,7 +89,8 @@ gjslint:
 	fi && \
 	cd $(GJSLINT_DIR) && \
 	git remote update && \
-	if [ `git rev-parse @` != `git rev-parse @{u}` ]; then \
+	if [ `git rev-parse @` != `git rev-parse @{u}` ] || \
+			[ ! -e $(linter) ]; then \
 		git pull && \
 		python ./setup.py install --user ; \
 	fi
@@ -101,7 +107,8 @@ pr:
 	fi && \
 	cd $(SRC_DIR) && \
 	git remote update && \
-	if [ `git rev-parse @` != `git rev-parse @{u}` ]; then \
+	if [ `git rev-parse @` != `git rev-parse @{u}` ] || \
+			[ ! -e ../PolymerRenamer.jar ]; then \
 		git pull && ant clean && ant jar && \
 		cp PolymerRenamer.jar ../ ; \
 	fi
@@ -109,7 +116,13 @@ pr:
 # Siple recipe to check for the needed prerequisits before attempting
 # a real build of the environment.
 env:
-	@which java python node git mvn ant npm &> /dev/null
+	@which java 
+	@which python 
+	@which node 
+	@which git 
+	@which mvn 
+	@which ant 
+	@which npm
 
 
 # Groups the third party deps into a single recipe.
@@ -122,8 +135,8 @@ apps/:
 # Pulls in the pstj library as dependency. We assume that most projects will need that.
 pstjlib: apps/
 	cd apps/ && \
-	if [ ! -d "pstj" ]; then git clone git@github.com:pstjvn/pstj-closure.git pstj; \
-	else cd pstj && git pull; fi
+	if [ ! -d "pstj" ]; then git clone git@github.com:pstjvn/pstj-closure.git pstj && cd pstj/nodejs && npm install; \
+	else cd pstj && git pull;fi
 
 # Pulls in the latest externs
 externs: apps/
@@ -138,4 +151,7 @@ smjslib: apps/
 	cd apps/ && \
 	if [ ! -d "smjs" ]; then git clone git@github.com:pstjvn/smjslib.git smjs; \
 	else cd pstj && git pull; fi
+
+lessc:
+	npm install less
 

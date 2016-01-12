@@ -1,2 +1,3 @@
 userbase = $(shell python -c "import site;import sys;sys.stdout.write(site.USER_BASE)")
 linter = $(userbase)/bin/gjslint
+lessc = ../../node_modules/.bin/lessc
