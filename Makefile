@@ -37,7 +37,9 @@ gcc:
 		git pull && \
 		ant clean && \
 		ant jar && \
-		cp build/compiler.jar ../ ; \
+		ant linter && \
+		cp build/linter.jar ../ && \
+		cp build/compiler.jar ../  ; \
 	fi
 
 # The closure stylesheet related jars.
@@ -116,12 +118,12 @@ pr:
 # Siple recipe to check for the needed prerequisits before attempting
 # a real build of the environment.
 env:
-	@which java 
-	@which python 
-	@which node 
-	@which git 
-	@which mvn 
-	@which ant 
+	@which java
+	@which python
+	@which node
+	@which git
+	@which mvn
+	@which ant
 	@which npm
 
 
